@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const dmSans = DM_Sans({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
 });
 
 const jetbrains = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -25,10 +24,9 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased`}
-      style={{ fontFamily: "var(--font-heading), system-ui, sans-serif" }}
+      className={`${dmSans.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col" style={{ background: "#020508" }}>
+      <body className="min-h-full flex flex-col" style={{ background: "#07080f", fontFamily: "var(--font-heading), system-ui, sans-serif" }}>
         {children}
       </body>
     </html>

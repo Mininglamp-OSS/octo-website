@@ -3,440 +3,321 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
-/* ─────────────────────────────────────────
-   CSS 3D rotating icosahedron wireframe
-   ───────────────────────────────────────── */
-function GeometricCore() {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: "320px",
-        height: "320px",
-        pointerEvents: "none",
-        zIndex: 2,
-      }}
-    >
-      {/* Outer pulsing ring */}
-      <div
-        style={{
-          position: "absolute",
-          inset: "-60px",
-          borderRadius: "50%",
-          border: "1px solid rgba(0,217,255,0.08)",
-          animation: "portal-ring 4s ease-in-out 0s infinite",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: "-30px",
-          borderRadius: "50%",
-          border: "1px solid rgba(0,217,255,0.14)",
-          animation: "portal-ring 4s ease-in-out 0.6s infinite",
-        }}
-      />
+/* ── Canvas particle field ── */
+function Particles() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current; if (!c) return;
+    const ctx = c.getContext("2d")!;
+    let raf: number;
+    const resize = () => { c.width = window.innerWidth; c.height = window.innerHeight; };
+    resize(); window.addEventListener("resize", resize);
+    const N = 55;
+    const pts = Array.from({ length: N }, () => ({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
+    }));
+    const tick = () => {
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (const p of pts) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > c.width) p.vx *= -1;
+        if (p.y < 0 || p.y > c.height) p.vy *= -1;
+      }
+      for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+        const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+        if (d < 130) { ctx.beginPath(); ctx.strokeStyle = `rgba(139,92,246,${(1-d/130)*0.18})`; ctx.lineWidth = .6; ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+      }
+      for (const p of pts) { ctx.beginPath(); ctx.arc(p.x,p.y,1.1,0,Math.PI*2); ctx.fillStyle="rgba(139,92,246,0.45)"; ctx.fill(); }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={ref} style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", opacity:.8 }} />;
+}
 
-      {/* CSS 3D cube wireframe */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          width: "160px",
-          height: "160px",
-          marginTop: "-80px",
-          marginLeft: "-80px",
-          transformStyle: "preserve-3d",
-          animation: "spin-3d 14s linear infinite",
-        }}
-      >
-        {/* 6 faces as wireframe borders only */}
-        {[
-          { transform: "translateZ(80px)" },
-          { transform: "translateZ(-80px)" },
-          { transform: "rotateY(90deg) translateZ(80px)" },
-          { transform: "rotateY(-90deg) translateZ(80px)" },
-          { transform: "rotateX(90deg) translateZ(80px)" },
-          { transform: "rotateX(-90deg) translateZ(80px)" },
-        ].map((style, i) => (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              inset: 0,
-              border: "1px solid rgba(0,217,255,0.55)",
-              background: "rgba(0,217,255,0.02)",
-              ...style,
-            }}
-          />
-        ))}
+/* ── Product mock ── */
+const MOCK_MESSAGES = [
+  { id:1, sender:"Alex", role:"PM", bot:false, avatar:"👨‍💼", text:"@DataBot 上周 DAU 趋势和转化漏斗？" },
+  { id:2, sender:"DataBot", role:"Bot", bot:true, avatar:"🤖", text:"正在查询数据库..." },
+  { id:3, sender:"DataBot", role:"Bot", bot:true, avatar:"🤖", text:"DAU 环比 +23%，周三峰值。转化率 18.4%，比上周 +2.1pp 📈", highlight:true },
+  { id:4, sender:"DataBot", role:"Bot", bot:true, avatar:"🤖", text:"✅ 报告已推送 #weekly-digest，含可视化图表" },
+  { id:5, sender:"Alex", role:"PM", bot:false, avatar:"👨‍💼", text:"完美，谢谢！节省了我 2 小时 🙌" },
+];
+
+function ProductMock() {
+  const [vis, setVis] = useState(0);
+  useEffect(() => {
+    const timers = MOCK_MESSAGES.map((_,i) => setTimeout(() => setVis(i+1), 800 + i*700));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  return (
+    <div style={{
+      borderRadius: "16px",
+      overflow: "hidden",
+      border: "1px solid rgba(255,255,255,0.1)",
+      background: "rgba(10,11,20,0.95)",
+      boxShadow: "0 0 0 1px rgba(139,92,246,0.15), 0 40px 100px rgba(0,0,0,0.7), 0 0 80px rgba(139,92,246,0.08)",
+    }}>
+      {/* Title bar */}
+      <div style={{
+        height:"44px", display:"flex", alignItems:"center", padding:"0 16px", gap:"10px",
+        background:"rgba(14,15,28,0.99)", borderBottom:"1px solid rgba(255,255,255,0.07)",
+      }}>
+        <div style={{ display:"flex", gap:"6px" }}>
+          {["#ff5f56","#ffbd2e","#27c93f"].map(c => <div key={c} style={{ width:12, height:12, borderRadius:"50%", background:c, opacity:.85 }} />)}
+        </div>
+        <div style={{ flex:1, display:"flex", justifyContent:"center", alignItems:"center", gap:"8px" }}>
+          <span style={{ fontSize:"13px", fontWeight:600, color:"rgba(255,255,255,0.7)" }}>🐙 Octo</span>
+          <span style={{ fontSize:"12px", color:"rgba(255,255,255,0.25)" }}>—</span>
+          <span style={{ fontSize:"12px", color:"rgba(255,255,255,0.35)" }}>#general</span>
+        </div>
+        <div style={{ display:"flex", gap:"8px" }}>
+          {["Members","Search","Settings"].map(t => (
+            <span key={t} style={{ fontSize:"11px", color:"rgba(255,255,255,0.2)", padding:"3px 8px", borderRadius:"4px", border:"1px solid rgba(255,255,255,0.08)" }}>{t}</span>
+          ))}
+        </div>
       </div>
 
-      {/* Inner glow */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          width: "180px",
-          height: "180px",
-          marginTop: "-90px",
-          marginLeft: "-90px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(0,217,255,0.18) 0%, transparent 70%)",
-          filter: "blur(20px)",
-          animation: "pulse-glow 3s ease-in-out infinite",
-        }}
-      />
+      {/* Body */}
+      <div style={{ display:"flex", height:"340px" }}>
+        {/* Sidebar */}
+        <div style={{ width:"190px", borderRight:"1px solid rgba(255,255,255,0.07)", padding:"12px 0", background:"rgba(9,10,18,0.6)", flexShrink:0 }}>
+          {/* Workspace */}
+          <div style={{ padding:"4px 12px 14px", borderBottom:"1px solid rgba(255,255,255,0.06)", marginBottom:"10px", display:"flex", alignItems:"center", gap:"8px" }}>
+            <div style={{ width:26, height:26, borderRadius:"8px", background:"linear-gradient(135deg,#7c3aed,#2563eb)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13 }}>🐙</div>
+            <div>
+              <div style={{ fontSize:12, fontWeight:700, color:"rgba(255,255,255,0.85)", lineHeight:1.2 }}>Octo Dev</div>
+              <div style={{ fontSize:10, color:"rgba(255,255,255,0.3)" }}>4 online</div>
+            </div>
+          </div>
+
+          {/* Channels */}
+          <div style={{ fontSize:10, color:"rgba(255,255,255,0.25)", padding:"0 12px 6px", fontWeight:600, letterSpacing:"0.08em", textTransform:"uppercase" }}>Channels</div>
+          {[
+            {name:"announcements", icon:"📢"},
+            {name:"general", icon:"💬", active:true},
+            {name:"pr-feed", icon:"🔀"},
+            {name:"issue-feed", icon:"🐛"},
+            {name:"weekly-digest", icon:"📊"},
+          ].map(ch => (
+            <div key={ch.name} style={{
+              display:"flex", alignItems:"center", gap:"7px", padding:"5px 12px",
+              fontSize:12,
+              background:ch.active ? "rgba(124,58,237,0.2)" : "transparent",
+              color:ch.active ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.38)",
+              fontWeight:ch.active ? 600 : 400,
+            }}>
+              <span style={{ fontSize:11 }}>{ch.icon}</span>
+              <span># {ch.name}</span>
+              {ch.active && <span style={{ marginLeft:"auto", background:"#7c3aed", color:"#fff", borderRadius:8, padding:"1px 5px", fontSize:9, fontWeight:700 }}>2</span>}
+            </div>
+          ))}
+
+          {/* Members */}
+          <div style={{ fontSize:10, color:"rgba(255,255,255,0.25)", padding:"14px 12px 6px", fontWeight:600, letterSpacing:"0.08em", textTransform:"uppercase" }}>Members</div>
+          {[
+            {name:"Alex", color:"#22c55e"},
+            {name:"DataBot 🤖", color:"#7c3aed", bot:true},
+            {name:"DocBot 📝", color:"#7c3aed", bot:true},
+          ].map(m => (
+            <div key={m.name} style={{ display:"flex", alignItems:"center", gap:"8px", padding:"4px 12px", fontSize:12, color:"rgba(255,255,255,0.4)" }}>
+              <div style={{ width:7, height:7, borderRadius:"50%", background:m.color, boxShadow:m.bot?`0 0 6px ${m.color}`:"none", flexShrink:0 }} />
+              <span>{m.name}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Chat */}
+        <div style={{ flex:1, display:"flex", flexDirection:"column", padding:"16px 20px", gap:0, overflowY:"hidden" }}>
+          {/* Channel header */}
+          <div style={{ paddingBottom:12, borderBottom:"1px solid rgba(255,255,255,0.07)", marginBottom:14, display:"flex", alignItems:"center", gap:8 }}>
+            <span style={{ fontSize:16 }}>💬</span>
+            <span style={{ fontWeight:700, fontSize:14, color:"rgba(255,255,255,0.9)" }}>#general</span>
+            <span style={{ color:"rgba(255,255,255,0.2)", fontSize:12, marginLeft:4 }}>AI 协作频道 · 3 成员在线</span>
+          </div>
+
+          {/* Messages */}
+          <div style={{ flex:1, display:"flex", flexDirection:"column", gap:12, justifyContent:"flex-end" }}>
+            {MOCK_MESSAGES.slice(0, vis).map((msg) => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity:0, y:8 }}
+                animate={{ opacity:1, y:0 }}
+                transition={{ duration:.3 }}
+                style={{ display:"flex", gap:10, alignItems:"flex-start" }}
+              >
+                <div style={{
+                  width:30, height:30, borderRadius:"50%", flexShrink:0,
+                  display:"flex", alignItems:"center", justifyContent:"center", fontSize:15,
+                  background:msg.bot ? "rgba(124,58,237,0.25)" : "rgba(99,102,241,0.2)",
+                  border:msg.bot ? "1px solid rgba(124,58,237,0.5)" : "1px solid rgba(99,102,241,0.3)",
+                  boxShadow:msg.bot ? "0 0 12px rgba(124,58,237,0.3)" : "none",
+                }}>
+                  {msg.avatar}
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:4 }}>
+                    <span style={{ fontSize:12, fontWeight:700, color:msg.bot ? "#a78bfa" : "#c7d2fe" }}>{msg.sender}</span>
+                    {msg.bot && <span style={{ fontSize:9, padding:"1px 5px", borderRadius:4, background:"rgba(124,58,237,0.2)", border:"1px solid rgba(124,58,237,0.35)", color:"#a78bfa", fontWeight:700 }}>BOT</span>}
+                    <span style={{ fontSize:10, color:"rgba(255,255,255,0.18)" }}>14:{30 + msg.id}</span>
+                  </div>
+                  <div style={{
+                    fontSize:13, lineHeight:1.65, color:"rgba(255,255,255,0.8)",
+                    padding:msg.bot ? "8px 12px" : "0",
+                    background:msg.bot ? (msg.highlight ? "rgba(124,58,237,0.12)" : "rgba(255,255,255,0.04)") : "transparent",
+                    border:msg.bot ? (msg.highlight ? "1px solid rgba(124,58,237,0.3)" : "1px solid rgba(255,255,255,0.07)") : "none",
+                    borderRadius:msg.bot ? "4px 10px 10px 10px" : 0,
+                    display:"inline-block", maxWidth:"100%",
+                  }}>
+                    {msg.text}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Input */}
+          <div style={{
+            marginTop:14, padding:"10px 14px", borderRadius:"10px",
+            background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.09)",
+            display:"flex", alignItems:"center", gap:10,
+          }}>
+            <span style={{ fontSize:13, color:"rgba(255,255,255,0.2)", flex:1 }}>发消息到 #general，或 @ Bot...</span>
+            <div style={{ display:"flex", gap:8 }}>
+              {["🤖","📎","😊"].map(e => <span key={e} style={{ fontSize:14, opacity:.4 }}>{e}</span>)}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────
-   Canvas particle network
-   ───────────────────────────────────────── */
-function ParticleField() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    let raf: number;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const N = 70;
-    type P = { x: number; y: number; vx: number; vy: number };
-    const pts: P[] = Array.from({ length: N }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.28,
-      vy: (Math.random() - 0.5) * 0.28,
-    }));
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const p of pts) {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      }
-      for (let i = 0; i < N; i++) {
-        for (let j = i + 1; j < N; j++) {
-          const dx = pts[i].x - pts[j].x;
-          const dy = pts[i].y - pts[j].y;
-          const d = Math.hypot(dx, dy);
-          if (d < 140) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(0,217,255,${(1 - d / 140) * 0.22})`;
-            ctx.lineWidth = 0.6;
-            ctx.moveTo(pts[i].x, pts[i].y);
-            ctx.lineTo(pts[j].x, pts[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      for (const p of pts) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0,217,255,0.5)";
-        ctx.fill();
-      }
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
-
-  return (
-    <canvas
-      ref={ref}
-      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
-    />
-  );
-}
-
-/* ─────────────────────────────────────────
-   Scan-line CRT overlay
-   ───────────────────────────────────────── */
-function ScanLines() {
-  return (
-    <div
-      style={{
-        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 3,
-        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
-      }}
-    />
-  );
-}
-
-/* ─────────────────────────────────────────
-   Main
-   ───────────────────────────────────────── */
-const STATS = [
-  { val: "81+", label: "GitHub Stars" },
-  { val: "9",   label: "开源仓库" },
-  { val: "∞",   label: "可接入 Bot" },
-];
-
+/* ── Main ── */
 export default function HeroSection() {
   const [on, setOn] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setOn(true), 120); return () => clearTimeout(t); }, []);
+  useEffect(() => { setTimeout(() => setOn(true), 80); }, []);
 
   return (
-    <section
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-        background: "#020508",
-      }}
-    >
-      {/* keyframes */}
-      <style>{`
-        @keyframes spin-3d {
-          from { transform: rotateX(20deg) rotateY(0deg) rotateZ(0deg); }
-          to   { transform: rotateX(20deg) rotateY(360deg) rotateZ(360deg); }
-        }
-        @keyframes portal-ring {
-          0%,100% { transform: scale(0.96); opacity:.5; }
-          50%      { transform: scale(1.04); opacity:1; }
-        }
-      `}</style>
+    <section style={{ position:"relative", minHeight:"100vh", overflow:"hidden", background:"#07080f" }}>
+      <Particles />
 
-      {/* Layer stack */}
-      <ParticleField />
-      <ScanLines />
-
-      {/* Deep radial vignette */}
+      {/* Purple glow center-top */}
       <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 4,
-        background: "radial-gradient(ellipse 75% 75% at 50% 50%, transparent 20%, rgba(2,5,8,0.75) 100%)",
+        position:"absolute", top:"-20%", left:"50%", transform:"translateX(-50%)",
+        width:"800px", height:"800px", borderRadius:"50%",
+        background:"radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 65%)",
+        pointerEvents:"none",
+        animation:"pulse-glow 6s ease-in-out infinite",
+      }} />
+      {/* Blue bottom-right */}
+      <div style={{
+        position:"absolute", bottom:"-10%", right:"-10%",
+        width:"600px", height:"600px", borderRadius:"50%",
+        background:"radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 65%)",
+        pointerEvents:"none",
+        animation:"pulse-glow 6s ease-in-out 2s infinite",
       }} />
 
-      {/* Cyan center atmosphere */}
-      <div style={{
-        position: "absolute", top: "50%", left: "50%",
-        width: "700px", height: "700px",
-        marginTop: "-350px", marginLeft: "-350px",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(0,217,255,0.07) 0%, transparent 65%)",
-        pointerEvents: "none", zIndex: 1,
-        animation: "pulse-glow 5s ease-in-out infinite",
-      }} />
+      {/* Content */}
+      <div style={{ position:"relative", zIndex:10, maxWidth:"1200px", margin:"0 auto", padding:"140px 32px 80px" }}>
 
-      {/* 3D Geometric core */}
-      <GeometricCore />
+        {/* Hero text */}
+        <div style={{ textAlign:"center", maxWidth:"760px", margin:"0 auto 64px" }}>
+          {/* Eyebrow */}
+          <motion.div initial={{ opacity:0, y:12 }} animate={on?{opacity:1,y:0}:{}} transition={{ duration:.6, delay:.1 }} style={{ marginBottom:24 }}>
+            <span style={{
+              display:"inline-flex", alignItems:"center", gap:8,
+              padding:"6px 16px", borderRadius:100,
+              border:"1px solid rgba(124,58,237,0.4)", background:"rgba(124,58,237,0.08)",
+              fontSize:12, color:"#c4b5fd", fontWeight:600, letterSpacing:"0.04em",
+            }}>
+              <span style={{ width:6, height:6, borderRadius:"50%", background:"#7c3aed", boxShadow:"0 0 8px #7c3aed", display:"inline-block", animation:"pulse-glow 2s ease-in-out infinite" }} />
+              Open Source · AI-Native · Self-hosted
+            </span>
+          </motion.div>
 
-      {/* ── Content ── */}
-      <div style={{ position: "relative", zIndex: 10, textAlign: "center", padding: "0 24px", maxWidth: "860px" }}>
+          {/* H1 */}
+          <motion.h1
+            initial={{ opacity:0, y:28 }} animate={on?{opacity:1,y:0}:{}} transition={{ duration:.85, delay:.2, ease:[.16,1,.3,1] }}
+            style={{
+              fontSize:"clamp(52px,7.5vw,96px)", fontWeight:700,
+              lineHeight:1.05, letterSpacing:"-0.03em", marginBottom:24,
+              fontFamily:"var(--font-heading), sans-serif",
+            }}
+          >
+            <span style={{ color:"#fff" }}>AI 与人，</span>
+            <br />
+            <span style={{
+              background:"linear-gradient(135deg, #a78bfa 0%, #818cf8 40%, #38bdf8 100%)",
+              WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text",
+            }}>
+              共事于此
+            </span>
+          </motion.h1>
 
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0, letterSpacing: "0.3em" }}
-          animate={on ? { opacity: 1, letterSpacing: "0.14em" } : {}}
-          transition={{ duration: 1, delay: 0.1 }}
-          style={{
-            fontSize: "11px", fontWeight: 600, textTransform: "uppercase",
-            color: "#00D9FF", letterSpacing: "0.14em",
-            marginBottom: "32px",
-          }}
-        >
-          Open Source · AI-Native Collaboration · Self-hosted
-        </motion.p>
+          {/* Sub */}
+          <motion.p
+            initial={{ opacity:0, y:20 }} animate={on?{opacity:1,y:0}:{}} transition={{ duration:.7, delay:.35 }}
+            style={{ fontSize:17, color:"rgba(255,255,255,0.45)", lineHeight:1.75, maxWidth:480, margin:"0 auto 44px" }}
+          >
+            不是 AI 工具，而是 AI 同事。<br />
+            Bot 加入你的工作空间，共享上下文，实时协作完成任务。
+          </motion.p>
 
-        {/* H1 */}
-        <motion.h1
-          initial={{ opacity: 0, y: 32 }}
-          animate={on ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            fontFamily: "var(--font-heading), sans-serif",
-            fontSize: "clamp(60px, 9vw, 116px)",
-            fontWeight: 700,
-            lineHeight: 1.0,
-            letterSpacing: "-0.04em",
-            marginBottom: "24px",
-            color: "#fff",
-          }}
-        >
-          AI 与人
-          <br />
-          <span style={{
-            background: "linear-gradient(90deg, #00D9FF 0%, #7c3aed 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}>
-            共事于此
-          </span>
-        </motion.h1>
+          {/* CTAs */}
+          <motion.div initial={{ opacity:0, y:16 }} animate={on?{opacity:1,y:0}:{}} transition={{ duration:.7, delay:.5 }}
+            style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}
+          >
+            <a href="#cta" style={{
+              padding:"13px 32px", borderRadius:10,
+              background:"linear-gradient(135deg,#7c3aed,#2563eb)",
+              color:"#fff", fontWeight:600, fontSize:14, textDecoration:"none",
+              boxShadow:"0 0 32px rgba(124,58,237,0.45), 0 4px 20px rgba(37,99,235,0.3)",
+              transition:"all .2s ease", display:"inline-block",
+            }}
+            onMouseEnter={e=>{ const el=e.currentTarget as HTMLElement; el.style.boxShadow="0 0 60px rgba(124,58,237,0.65), 0 8px 28px rgba(37,99,235,0.5)"; el.style.transform="translateY(-2px)"; }}
+            onMouseLeave={e=>{ const el=e.currentTarget as HTMLElement; el.style.boxShadow="0 0 32px rgba(124,58,237,0.45), 0 4px 20px rgba(37,99,235,0.3)"; el.style.transform="translateY(0)"; }}>
+              申请内测 →
+            </a>
+            <a href="https://github.com/Mininglamp-OSS" target="_blank" rel="noopener noreferrer" style={{
+              padding:"13px 32px", borderRadius:10,
+              border:"1px solid rgba(255,255,255,0.13)", background:"rgba(255,255,255,0.04)",
+              color:"rgba(255,255,255,0.7)", fontWeight:500, fontSize:14, textDecoration:"none",
+              transition:"all .2s ease", display:"inline-block",
+            }}
+            onMouseEnter={e=>{ const el=e.currentTarget as HTMLElement; el.style.borderColor="rgba(255,255,255,0.25)"; el.style.background="rgba(255,255,255,0.08)"; el.style.color="#fff"; el.style.transform="translateY(-2px)"; }}
+            onMouseLeave={e=>{ const el=e.currentTarget as HTMLElement; el.style.borderColor="rgba(255,255,255,0.13)"; el.style.background="rgba(255,255,255,0.04)"; el.style.color="rgba(255,255,255,0.7)"; el.style.transform="translateY(0)"; }}>
+              Star on GitHub ↗
+            </a>
+          </motion.div>
+        </div>
 
-        {/* Sub — monospace typewriter feel */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={on ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: "14px",
-            color: "rgba(255,255,255,0.38)",
-            letterSpacing: "0.02em",
-            lineHeight: 1.8,
-            marginBottom: "52px",
-          }}
-        >
-          {"// 不是 AI 工具，而是 AI 同事"}<br />
-          {"// Bot 加入团队，共享上下文，协作完成任务"}
-        </motion.p>
-
-        {/* CTAs */}
+        {/* Product mock — the centrepiece */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={on ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.65 }}
-          style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap", marginBottom: "64px" }}
+          initial={{ opacity:0, y:56, scale:.97 }} animate={on?{opacity:1,y:0,scale:1}:{}} transition={{ duration:1, delay:.6, ease:[.16,1,.3,1] }}
         >
-          {/* Primary */}
-          <a
-            href="#cta"
-            style={{
-              padding: "14px 36px", borderRadius: "4px",
-              background: "transparent",
-              border: "1px solid #00D9FF",
-              color: "#00D9FF",
-              fontFamily: "var(--font-mono), monospace",
-              fontWeight: 600, fontSize: "13px",
-              textDecoration: "none",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              transition: "all 0.2s ease",
-              boxShadow: "0 0 20px rgba(0,217,255,0.2), inset 0 0 20px rgba(0,217,255,0.03)",
-              display: "inline-block",
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = "rgba(0,217,255,0.12)";
-              el.style.boxShadow = "0 0 40px rgba(0,217,255,0.45), inset 0 0 40px rgba(0,217,255,0.08)";
-              el.style.transform = "translateY(-2px)";
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = "transparent";
-              el.style.boxShadow = "0 0 20px rgba(0,217,255,0.2), inset 0 0 20px rgba(0,217,255,0.03)";
-              el.style.transform = "translateY(0)";
-            }}
-          >
-            申请内测 _
-          </a>
-
-          {/* Secondary */}
-          <a
-            href="https://github.com/Mininglamp-OSS"
-            target="_blank" rel="noopener noreferrer"
-            style={{
-              padding: "14px 36px", borderRadius: "4px",
-              border: "1px solid rgba(255,255,255,0.15)",
-              color: "rgba(255,255,255,0.5)",
-              fontFamily: "var(--font-mono), monospace",
-              fontWeight: 500, fontSize: "13px",
-              textDecoration: "none",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              transition: "all 0.2s ease",
-              display: "inline-block",
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.borderColor = "rgba(255,255,255,0.35)";
-              el.style.color = "rgba(255,255,255,0.85)";
-              el.style.transform = "translateY(-2px)";
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.borderColor = "rgba(255,255,255,0.15)";
-              el.style.color = "rgba(255,255,255,0.5)";
-              el.style.transform = "translateY(0)";
-            }}
-          >
-            GitHub ↗
-          </a>
+          <ProductMock />
         </motion.div>
 
         {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={on ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 1 }}
-          style={{ display: "flex", gap: "48px", justifyContent: "center", flexWrap: "wrap" }}
+        <motion.div initial={{ opacity:0 }} animate={on?{opacity:1}:{}} transition={{ duration:.8, delay:1.1 }}
+          style={{ display:"flex", gap:48, justifyContent:"center", flexWrap:"wrap", marginTop:48 }}
         >
-          {STATS.map(({ val, label }) => (
-            <div key={label} style={{ textAlign: "center" }}>
-              <div style={{
-                fontFamily: "var(--font-heading), sans-serif",
-                fontSize: "32px", fontWeight: 700,
-                color: "#00D9FF",
-                letterSpacing: "-0.03em",
-                lineHeight: 1,
-                marginBottom: "6px",
-              }}>
-                {val}
-              </div>
-              <div style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: "11px", color: "rgba(255,255,255,0.25)",
-                letterSpacing: "0.08em", textTransform: "uppercase",
-              }}>
-                {label}
-              </div>
+          {[{v:"81+",l:"GitHub Stars"},{v:"9",l:"开源仓库"},{v:"∞",l:"可接入 Bot"}].map(({v,l})=>(
+            <div key={l} style={{ textAlign:"center" }}>
+              <div style={{ fontSize:28, fontWeight:700, color:"#a78bfa", letterSpacing:"-0.02em", lineHeight:1 }}>{v}</div>
+              <div style={{ fontSize:11, color:"rgba(255,255,255,0.25)", marginTop:5, letterSpacing:"0.06em", textTransform:"uppercase" }}>{l}</div>
             </div>
           ))}
         </motion.div>
       </div>
 
       {/* Bottom fade */}
-      <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, height: "200px",
-        background: "linear-gradient(to bottom, transparent, #020508)",
-        pointerEvents: "none", zIndex: 8,
-      }} />
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={on ? { opacity: 1 } : {}}
-        transition={{ delay: 1.8, duration: 1 }}
-        style={{
-          position: "absolute", bottom: "28px", left: "50%",
-          transform: "translateX(-50%)", zIndex: 10,
-          display: "flex", flexDirection: "column", alignItems: "center", gap: "4px",
-        }}
-      >
-        <span style={{
-          fontFamily: "var(--font-mono), monospace",
-          fontSize: "9px", color: "rgba(0,217,255,0.3)",
-          letterSpacing: "0.2em",
-        }}>
-          SCROLL
-        </span>
-        <div style={{
-          width: "1px", height: "32px",
-          background: "linear-gradient(to bottom, rgba(0,217,255,0.5), transparent)",
-          animation: "float-slow 2.5s ease-in-out infinite",
-        }} />
-      </motion.div>
+      <div style={{ position:"absolute", bottom:0, left:0, right:0, height:160, background:"linear-gradient(to bottom, transparent, #07080f)", pointerEvents:"none", zIndex:8 }} />
     </section>
   );
 }
