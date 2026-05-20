@@ -1,39 +1,36 @@
 import type { Metadata } from "next";
-import { Geist, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-heading",
   subsets: ["latin"],
-});
-
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
   title: "Octo — AI 与人，共事于此",
-  description:
-    "不是 AI 工具，而是 AI 同事。Octo 让 AI Agent 走进你的工作空间。",
+  description: "不是 AI 工具，而是 AI 同事。Octo 让 AI Agent 走进你的工作空间，开源、自托管、AI 原生。",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="zh-CN"
-      className={`${geist.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased`}
+      style={{ fontFamily: "var(--font-heading), system-ui, sans-serif" }}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col" style={{ background: "#020508" }}>
+        {children}
+      </body>
     </html>
   );
 }
