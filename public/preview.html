@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Octo — AI 与人，共事于此</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080a10;
+  --bg2: #0d1017;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --text: #f1f5f9;
+  --text-muted: #64748b;
+  --text-subtle: rgba(255,255,255,0.35);
+  --accent: #6366f1;
+  --accent-glow: rgba(99,102,241,0.25);
+  --cyan: #06b6d4;
+  --green: #22c55e;
+}
+
+html { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+/* ─── Noise texture ─── */
+html::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+}
+
+/* ─── Radial bg ─── */
+.bg-radial {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -10%, rgba(99,102,241,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(6,182,212,0.07) 0%, transparent 60%);
+}
+
+/* ─── Nav ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(8,10,16,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; color: var(--text); text-decoration: none; }
+.nav-badge { font-size: 10px; padding: 2px 7px; border-radius: 100px; border: 1px solid rgba(99,102,241,0.4); color: #a5b4fc; font-weight: 600; letter-spacing: 0.04em; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color .15s; }
+.nav-link:hover { color: var(--text); }
+.btn-primary { padding: 8px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: opacity .15s; }
+.btn-primary:hover { opacity: 0.85; }
+
+/* ─── Hero ─── */
+.hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 100px 40px 80px;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: 32px;
+  padding: 6px 14px; border-radius: 100px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  font-size: 12px; color: var(--text-subtle); font-weight: 500; letter-spacing: 0.04em;
+}
+.hero-eyebrow span { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+.hero-h1 {
+  font-size: clamp(56px, 7vw, 96px);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+.hero-h1 .gradient {
+  background: linear-gradient(90deg, #818cf8 0%, #a5b4fc 50%, #67e8f9 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.hero-sub {
+  font-size: 17px; color: var(--text-subtle); line-height: 1.75;
+  max-width: 440px; margin: 0 auto 44px;
+}
+
+.hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 72px; }
+
+.btn-solid {
+  padding: 12px 28px; border-radius: 9px;
+  background: var(--accent);
+  color: #fff; font-size: 14px; font-weight: 600; text-decoration: none;
+  box-shadow: 0 0 24px rgba(99,102,241,0.4), 0 2px 8px rgba(99,102,241,0.3);
+  transition: all .2s;
+  display: inline-block;
+}
+.btn-solid:hover { box-shadow: 0 0 40px rgba(99,102,241,0.6), 0 4px 16px rgba(99,102,241,0.4); transform: translateY(-1px); }
+
+.btn-ghost {
+  padding: 12px 28px; border-radius: 9px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; text-decoration: none;
+  transition: all .2s; display: inline-block;
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.25); color: var(--text); background: rgba(255,255,255,0.06); transform: translateY(-1px); }
+
+/* ─── Product window ─── */
+.product-window {
+  width: 100%; max-width: 920px; margin: 0 auto;
+  border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    0 0 0 1px rgba(99,102,241,0.12),
+    0 32px 80px rgba(0,0,0,0.6),
+    0 0 120px rgba(99,102,241,0.05);
+  background: var(--bg2);
+}
+
+/* Title bar */
+.window-bar {
+  height: 42px; display: flex; align-items: center; padding: 0 16px; gap: 12px;
+  background: #0b0e18; border-bottom: 1px solid var(--border);
+}
+.window-dots { display: flex; gap: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.window-title { flex: 1; text-align: center; font-size: 13px; color: rgba(255,255,255,0.28); font-weight: 500; }
+
+/* App layout */
+.app-body { display: flex; height: 380px; }
+
+/* Sidebar */
+.sidebar {
+  width: 200px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: rgba(8,10,18,0.5);
+  padding: 14px 0; overflow: hidden;
+}
+.sidebar-workspace {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 14px 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.ws-icon { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #2563eb); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.ws-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.ws-sub { font-size: 10px; color: var(--text-muted); }
+
+.sidebar-label { font-size: 10px; color: var(--text-muted); padding: 0 14px 6px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.channel { display: flex; align-items: center; gap: 7px; padding: 5px 14px; font-size: 12.5px; cursor: pointer; border-radius: 0; transition: background .1s; }
+.channel:hover { background: rgba(255,255,255,0.04); }
+.channel.active { background: rgba(99,102,241,0.15); }
+.channel.active .ch-name { color: var(--text); font-weight: 600; }
+.channel-icon { font-size: 11px; opacity: 0.6; }
+.ch-name { color: var(--text-muted); }
+.ch-badge { margin-left: auto; background: var(--accent); color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 9px; font-weight: 700; }
+
+.member-row { display: flex; align-items: center; gap: 8px; padding: 4px 14px; }
+.member-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.member-name { font-size: 12px; color: var(--text-muted); }
+
+/* Chat */
+.chat-area { flex: 1; display: flex; flex-direction: column; padding: 16px 20px; gap: 0; min-width: 0; }
+.chat-header { display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 14px; flex-shrink: 0; }
+.chat-header-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.chat-header-desc { font-size: 12px; color: var(--text-muted); }
+
+.messages { display: flex; flex-direction: column; gap: 14px; flex: 1; justify-content: flex-end; }
+
+.msg { display: flex; gap: 10px; align-items: flex-start; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.avatar.human { background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.3); }
+.avatar.bot { background: rgba(6,182,212,0.2); border: 1px solid rgba(6,182,212,0.4); box-shadow: 0 0 10px rgba(6,182,212,0.2); }
+.msg-content { flex: 1; min-width: 0; }
+.msg-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+.msg-name { font-size: 12.5px; font-weight: 700; }
+.msg-name.bot-name { color: #67e8f9; }
+.msg-name.human-name { color: #a5b4fc; }
+.bot-tag { font-size: 9px; padding: 1px 5px; border-radius: 4px; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: #67e8f9; font-weight: 700; }
+.msg-time { font-size: 10.5px; color: rgba(255,255,255,0.2); }
+.msg-text { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.78); display: inline-block; }
+.msg-text.bot-bubble {
+  padding: 9px 13px;
+  background: rgba(6,182,212,0.07);
+  border: 1px solid rgba(6,182,212,0.18);
+  border-radius: 4px 10px 10px 10px;
+}
+.msg-text.bot-bubble.highlight {
+  background: rgba(99,102,241,0.1);
+  border-color: rgba(99,102,241,0.25);
+}
+
+/* Input bar */
+.chat-input {
+  margin-top: 12px; flex-shrink: 0;
+  padding: 9px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.input-placeholder { font-size: 13px; color: rgba(255,255,255,0.2); flex: 1; }
+.input-icons { display: flex; gap: 8px; }
+.input-icon { font-size: 14px; opacity: 0.3; }
+
+/* ─── Stats ─── */
+.stats { display: flex; gap: 56px; justify-content: center; flex-wrap: wrap; margin-top: 48px; }
+.stat-val { font-size: 30px; font-weight: 700; color: var(--accent); letter-spacing: -0.03em; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="bg-radial"></div>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="#">
+    <span>🐙</span> Octo
+    <span class="nav-badge">Open Source</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="#">文档</a>
+    <a class="nav-link" href="#">GitHub</a>
+    <a class="btn-primary" href="#">申请内测</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+
+  <!-- Eyebrow -->
+  <div class="hero-eyebrow">
+    <span></span>
+    Open Source · AI-Native Collaboration · Self-hosted
+  </div>
+
+  <!-- H1 -->
+  <h1 class="hero-h1">
+    AI 与人，<br>
+    <span class="gradient">共事于此</span>
+  </h1>
+
+  <!-- Sub -->
+  <p class="hero-sub">
+    不是 AI 工具，而是 AI 同事。<br>
+    Bot 加入工作空间，共享上下文，协作完成任务。
+  </p>
+
+  <!-- CTAs -->
+  <div class="hero-ctas">
+    <a class="btn-solid" href="#">申请内测 →</a>
+    <a class="btn-ghost" href="#">Star on GitHub ↗</a>
+  </div>
+
+  <!-- Product window -->
+  <div class="product-window">
+    <!-- Title bar -->
+    <div class="window-bar">
+      <div class="window-dots">
+        <div class="dot" style="background:#ff5f56"></div>
+        <div class="dot" style="background:#ffbd2e"></div>
+        <div class="dot" style="background:#27c93f"></div>
+      </div>
+      <div class="window-title">🐙 Octo — #general</div>
+    </div>
+
+    <!-- App body -->
+    <div class="app-body">
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-workspace">
+          <div class="ws-icon">🐙</div>
+          <div>
+            <div class="ws-name">Octo 开发团队</div>
+            <div class="ws-sub">4 人在线</div>
+          </div>
+        </div>
+
+        <div class="sidebar-label" style="margin-top:0">频道</div>
+        <div class="channel"><span class="channel-icon">📢</span><span class="ch-name"># announcements</span></div>
+        <div class="channel active"><span class="channel-icon">💬</span><span class="ch-name"># general</span><span class="ch-badge">2</span></div>
+        <div class="channel"><span class="channel-icon">🔀</span><span class="ch-name"># pr-feed</span></div>
+        <div class="channel"><span class="channel-icon">🐛</span><span class="ch-name"># issue-feed</span></div>
+        <div class="channel"><span class="channel-icon">📊</span><span class="ch-name"># weekly-digest</span></div>
+
+        <div class="sidebar-label" style="margin-top:14px">成员</div>
+        <div class="member-row"><div class="member-dot" style="background:var(--green)"></div><span class="member-name">产品经理 Alex</span></div>
+        <div class="member-row"><div class="member-dot" style="background:var(--cyan);box-shadow:0 0 5px var(--cyan)"></div><span class="member-name">🤖 DataBot</span></div>
+        <div class="member-row"><div class="member-dot" style="background:var(--cyan);box-shadow:0 0 5px var(--cyan)"></div><span class="member-name">📝 DocBot</span></div>
+      </div>
+
+      <!-- Chat -->
+      <div class="chat-area">
+        <div class="chat-header">
+          <span style="font-size:16px">💬</span>
+          <span class="chat-header-title"># general</span>
+          <span class="chat-header-desc">AI 协作频道 · 3 在线</span>
+        </div>
+
+        <div class="messages">
+
+          <div class="msg">
+            <div class="avatar human">👨‍💼</div>
+            <div class="msg-content">
+              <div class="msg-meta"><span class="msg-name human-name">Alex</span><span class="msg-time">14:32</span></div>
+              <span class="msg-text">@DataBot 帮我出一下上周 DAU 数据和转化漏斗分析</span>
+            </div>
+          </div>
+
+          <div class="msg">
+            <div class="avatar bot">🤖</div>
+            <div class="msg-content">
+              <div class="msg-meta"><span class="msg-name bot-name">DataBot</span><span class="bot-tag">BOT</span><span class="msg-time">14:32</span></div>
+              <span class="msg-text bot-bubble">正在查询数据仓库...</span>
+            </div>
+          </div>
+
+          <div class="msg">
+            <div class="avatar bot">🤖</div>
+            <div class="msg-content">
+              <div class="msg-meta"><span class="msg-name bot-name">DataBot</span><span class="bot-tag">BOT</span><span class="msg-time">14:32</span></div>
+              <span class="msg-text bot-bubble highlight">上周 DAU 14.2k，环比 +23%，周三 16:00 峰值。转化率 18.4%，较上周 +2.1pp 📈</span>
+            </div>
+          </div>
+
+          <div class="msg">
+            <div class="avatar bot">🤖</div>
+            <div class="msg-content">
+              <div class="msg-meta"><span class="msg-name bot-name">DataBot</span><span class="bot-tag">BOT</span><span class="msg-time">14:33</span></div>
+              <span class="msg-text bot-bubble">✅ 报告和可视化图表已推送至 #weekly-digest</span>
+            </div>
+          </div>
+
+          <div class="msg">
+            <div class="avatar human">👨‍💼</div>
+            <div class="msg-content">
+              <div class="msg-meta"><span class="msg-name human-name">Alex</span><span class="msg-time">14:33</span></div>
+              <span class="msg-text">太快了，帮我省了 2 小时！🙌</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="chat-input">
+          <span class="input-placeholder">发消息到 #general，或 @Bot 分配任务...</span>
+          <div class="input-icons">
+            <span class="input-icon">🤖</span>
+            <span class="input-icon">📎</span>
+            <span class="input-icon">😊</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div style="text-align:center">
+      <div class="stat-val">81+</div>
+      <div class="stat-label">GitHub Stars</div>
+    </div>
+    <div style="text-align:center">
+      <div class="stat-val">9</div>
+      <div class="stat-label">开源仓库</div>
+    </div>
+    <div style="text-align:center">
+      <div class="stat-val">∞</div>
+      <div class="stat-label">可接入 Bot</div>
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>
