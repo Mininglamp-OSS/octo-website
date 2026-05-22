@@ -35,12 +35,21 @@ export const metadata: Metadata = {
     url: "https://github.com/Mininglamp-OSS",
     siteName: "Octo",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Octo — Agents Do, Humans Decide. Open-source AI-native team collaboration.",
+      },
+    ],
   },
-  // Twitter card downgraded to summary (no OG image yet)
+  // Twitter card upgraded now that we have a real OG image
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Octo — Agents Do, Humans Decide.",
     description: "Open-source. Self-hosted. AI-native team collaboration.",
+    images: ["/og-image.png"],
   },
 };
 
@@ -60,6 +69,9 @@ export default function RootLayout({
           color: "var(--text)",
         }}
       >
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>

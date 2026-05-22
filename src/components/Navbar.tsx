@@ -14,6 +14,16 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Body scroll-lock when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+    return () => document.body.classList.remove("menu-open");
+  }, [menuOpen]);
+
   // N5: close drawer when viewport grows above mobile breakpoint
   useEffect(() => {
     const onResize = () => {

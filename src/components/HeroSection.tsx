@@ -26,7 +26,7 @@ function ProductUIDemo() {
       <div
         style={{
           width: "28%",
-          background: "#1A1A2E",
+          background: "var(--chat-sidebar-bg)",
           padding: "16px 0",
           flexShrink: 0,
         }}
@@ -110,7 +110,7 @@ function ProductUIDemo() {
       <div
         style={{
           flex: 1,
-          background: "#111827",
+          background: "var(--chat-area-bg)",
           display: "flex",
           flexDirection: "column",
           minHeight: "380px",

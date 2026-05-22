@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 
 export default function FeaturesSection() {
+  // Safe: items derive from static siteConfig so array length never changes at runtime
   const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {

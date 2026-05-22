@@ -57,7 +57,7 @@ export default function CTASection() {
             className="btn-white"
             style={{
               background: "#fff",
-              color: "#0A0A0A",
+              color: "var(--text)",
               padding: "14px 32px",
               borderRadius: "4px",
               fontSize: "15px",

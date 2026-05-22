@@ -4,6 +4,7 @@
 :root {
   --bg: #F5F3EE;
   --bg-2: #EDEAE3;
+  --bg-dark: #0A0A0A;        /* Manifesto + step dark surfaces */
   --text: #0A0A0A;
   --text-2: #5A5752;
   --accent-blue: #0000FF;
@@ -11,7 +12,9 @@
   --accent-yellow: #FFE600;
   --line: rgba(10, 10, 10, 0.12);
   --white: #FFFFFF;
-
+  /* Chat UI palette — intentionally vibrant; documented in site.ts chatColors */
+  --chat-sidebar-bg: #1A1A2E;
+  --chat-area-bg:    #111827;
 }
 
 /* ── Reset & Base ── */
@@ -33,6 +36,39 @@ body {
   color: var(--text);
   overflow-x: hidden;
   line-height: 1.6;
+}
+
+/* ── Skip-to-content (a11y) ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  z-index: 9999;
+  background: var(--accent-blue);
+  color: #fff;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ── Global focus-visible ── */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── Body scroll-lock when mobile menu open ── */
+body.menu-open {
+  overflow: hidden;
 }
 
 /* ── Scroll reveal ── */

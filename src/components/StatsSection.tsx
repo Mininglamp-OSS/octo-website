@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 
 export default function StatsSection() {
+  // Safe: items derive from static siteConfig so array length never changes at runtime
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -30,7 +31,8 @@ export default function StatsSection() {
             className="reveal"
             ref={(el) => { itemsRef.current[i] = el; }}
             style={{
-              padding: i === 0 ? "0 48px 0 0" : "0 48px",
+              padding: "0 48px",
+              paddingLeft: i === 0 ? 0 : undefined,
               borderRight: i < siteConfig.stats.length - 1 ? "1px solid var(--line)" : "none",
             }}
           >

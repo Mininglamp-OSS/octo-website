@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 
 export default function ManifestoSection() {
+  // Safe: items derive from static siteConfig so array length never changes at runtime
   const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function ManifestoSection() {
   }, []);
 
   return (
-    <section className="section-pad" style={{ background: "#0A0A0A" }}>
+    <section className="section-pad" style={{ background: "var(--bg-dark)" }}>
       <div
         style={{
           fontSize: "11px",

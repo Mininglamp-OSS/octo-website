@@ -5,10 +5,11 @@ import { siteConfig } from "@/config/site";
 const colorMap = {
   blue:   { bg: "var(--accent-blue)",   color: "#fff" },
   orange: { bg: "var(--accent-orange)", color: "#fff" },
-  yellow: { bg: "var(--accent-yellow)", color: "#0A0A0A" },
+  yellow: { bg: "var(--accent-yellow)", color: "var(--text)" },
 };
 
 export default function HowItWorks() {
+  // Safe: items derive from static siteConfig so array length never changes at runtime
   const blocksRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
