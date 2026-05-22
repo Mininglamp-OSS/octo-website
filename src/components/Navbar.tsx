@@ -1,17 +1,45 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // N5: close drawer when viewport grows above mobile breakpoint
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // N6: close drawer on Escape key; return focus to hamburger
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        hamburgerRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    hamburgerRef.current?.focus();
+  };
 
   return (
     <nav
@@ -29,7 +57,7 @@ export default function Navbar() {
         className="navbar-inner"
         style={{ height: scrolled ? "52px" : "64px" }}
       >
-        {/* Logo — using next/link for internal route */}
+        {/* Logo */}
         <Link
           href="/"
           style={{
@@ -66,7 +94,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* CTA (always visible) */}
+        {/* Right side: CTA + hamburger */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <a
             href={siteConfig.nav.cta.href}
@@ -86,14 +114,16 @@ export default function Navbar() {
             {siteConfig.nav.cta.label}
           </a>
 
-          {/* Hamburger — visible on mobile only */}
+          {/* Hamburger button — hidden on desktop, shown on mobile via CSS */}
           <button
+            ref={hamburgerRef}
             className="hamburger-btn"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle navigation menu"
             aria-expanded={menuOpen}
+            aria-controls="mobile-nav-drawer"
             style={{
-              display: "none", // shown via CSS on mobile
+              display: "none",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -102,14 +132,12 @@ export default function Navbar() {
             }}
           >
             {menuOpen ? (
-              // X icon
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <line x1="4" y1="4" x2="16" y2="16" />
                 <line x1="16" y1="4" x2="4" y2="16" />
               </svg>
             ) : (
-              // Hamburger icon
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <line x1="3" y1="6" x2="17" y2="6" />
                 <line x1="3" y1="10" x2="17" y2="10" />
                 <line x1="3" y1="14" x2="17" y2="14" />
@@ -119,9 +147,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu drawer */}
+      {/* Mobile drawer — hidden on desktop via CSS */}
       {menuOpen && (
         <div
+          id="mobile-nav-drawer"
+          role="region"
+          aria-label="Navigation menu"
           className="mobile-menu"
           style={{
             background: "rgba(245,243,238,0.98)",
@@ -129,7 +160,7 @@ export default function Navbar() {
             padding: "16px 24px 24px",
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "4px",
           }}
         >
           {siteConfig.nav.links.map((link) => (
@@ -138,15 +169,16 @@ export default function Navbar() {
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               style={{
                 color: "var(--text)",
                 textDecoration: "none",
                 fontSize: "16px",
                 fontWeight: 500,
                 fontFamily: "var(--font-body)",
-                padding: "8px 0",
+                padding: "12px 0",
                 borderBottom: "1px solid var(--line)",
+                display: "block",
               }}
             >
               {link.label}

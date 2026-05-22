@@ -7,7 +7,7 @@ Official landing page for [Octo](https://github.com/Mininglamp-OSS) — the open
 
 ## Stack
 
-- [Next.js 16](https://nextjs.org/) (App Router, static export)
+- [Next.js 16](https://nextjs.org/) (App Router, fully static SSG — `output: 'export'`, outputs `out/`)
 - [Tailwind CSS v4](https://tailwindcss.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 

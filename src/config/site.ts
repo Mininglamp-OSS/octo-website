@@ -133,8 +133,20 @@ export const siteConfig = {
       { label: "Docs →", href: "https://github.com/Mininglamp-OSS", external: true },
       { label: "Roadmap →", href: "https://github.com/Mininglamp-OSS", external: true },
     ],
-    copy: "© 2025 Mininglamp-OSS · Made with 🐙",
   },
 };
 
+// Chat demo color palette (used in HeroSection ProductUIDemo).
+// Uses vibrant palette colors intentionally — these are for the dark chat UI
+// and are documented here as the single source of truth.
+export const chatColors = {
+  alice:         "#A78BFA", // violet-400
+  bob:           "#34D399", // emerald-400
+  charlie:       "#FB923C", // orange-400
+  planningAgent: "#60A5FA", // blue-400
+  dataAgent:     "#F472B6", // pink-400
+  onlineDot:     "#22c55e", // green-500
+};
+
 export type SiteConfig = typeof siteConfig;
+

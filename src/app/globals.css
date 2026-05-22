@@ -24,6 +24,8 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Prevent sticky nav from obscuring anchor targets */
+  scroll-padding-top: 72px;
 }
 
 body {

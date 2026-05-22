@@ -1,5 +1,5 @@
 "use client";
-import { siteConfig } from "@/config/site";
+import { siteConfig, chatColors } from "@/config/site";
 
 const { hero } = siteConfig;
 
@@ -96,7 +96,7 @@ function ProductUIDemo() {
                 width: "6px",
                 height: "6px",
                 borderRadius: "50%",
-                background: "#22c55e",
+                background: chatColors.onlineDot,
                 flexShrink: 0,
                 display: "inline-block",
               }}
@@ -161,7 +161,7 @@ function ProductUIDemo() {
           {/* Alice */}
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "2px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#A78BFA", fontFamily: "var(--font-body)" }}>Alice Smith</span>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: chatColors.alice, fontFamily: "var(--font-body)" }}>Alice Smith</span>
               <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-body)", fontWeight: 300 }}>10:23</span>
             </div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.82)", fontFamily: "var(--font-body)", lineHeight: 1.5 }}>
@@ -172,7 +172,7 @@ function ProductUIDemo() {
           {/* Planning Agent */}
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "2px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#60A5FA", fontFamily: "var(--font-body)" }}>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: chatColors.planningAgent, fontFamily: "var(--font-body)" }}>
                 <span aria-hidden="true">🤖</span> Planning Agent
               </span>
               <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-body)", fontWeight: 300 }}>10:23</span>
@@ -183,7 +183,7 @@ function ProductUIDemo() {
             <div
               style={{
                 background: "rgba(255,255,255,0.06)",
-                borderLeft: "2px solid #60A5FA",
+                borderLeft: "2px solid " + chatColors.planningAgent,
                 borderRadius: "4px",
                 padding: "8px 12px",
                 fontFamily: "monospace",
@@ -204,7 +204,7 @@ function ProductUIDemo() {
           {/* Bob */}
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "2px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#34D399", fontFamily: "var(--font-body)" }}>Bob Chen</span>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: chatColors.bob, fontFamily: "var(--font-body)" }}>Bob Chen</span>
               <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-body)", fontWeight: 300 }}>10:24</span>
             </div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.82)", fontFamily: "var(--font-body)", lineHeight: 1.5 }}>
@@ -215,7 +215,7 @@ function ProductUIDemo() {
           {/* Data Agent */}
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "2px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#F472B6", fontFamily: "var(--font-body)" }}>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: chatColors.dataAgent, fontFamily: "var(--font-body)" }}>
                 <span aria-hidden="true">📊</span> Data Agent
               </span>
               <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-body)", fontWeight: 300 }}>10:25</span>
@@ -223,7 +223,7 @@ function ProductUIDemo() {
             <div
               style={{
                 background: "rgba(255,255,255,0.04)",
-                borderLeft: "2px solid #F472B6",
+                borderLeft: "2px solid " + chatColors.dataAgent,
                 borderRadius: "4px",
                 padding: "8px 12px",
                 fontSize: "11px",
@@ -240,7 +240,7 @@ function ProductUIDemo() {
           {/* Charlie */}
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "2px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#FB923C", fontFamily: "var(--font-body)" }}>Charlie Dev</span>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: chatColors.charlie, fontFamily: "var(--font-body)" }}>Charlie Dev</span>
               <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-body)", fontWeight: 300 }}>10:25</span>
             </div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.82)", fontFamily: "var(--font-body)", lineHeight: 1.5 }}>
@@ -251,7 +251,7 @@ function ProductUIDemo() {
           {/* Bob reply */}
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "2px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#34D399", fontFamily: "var(--font-body)" }}>Bob Chen</span>
+              <span style={{ fontSize: "12px", fontWeight: 600, color: chatColors.bob, fontFamily: "var(--font-body)" }}>Bob Chen</span>
               <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-body)", fontWeight: 300 }}>10:25</span>
             </div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.82)", fontFamily: "var(--font-body)", lineHeight: 1.5 }}>
