@@ -1,53 +1,201 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Body scroll-lock when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+    return () => document.body.classList.remove("menu-open");
+  }, [menuOpen]);
+
+  // N5: close drawer when viewport grows above mobile breakpoint
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // N6: close drawer on Escape key; return focus to hamburger
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        hamburgerRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    hamburgerRef.current?.focus();
+  };
+
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       style={{
-        background: "rgba(8,11,20,0.85)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: scrolled
-          ? "1px solid rgba(255,255,255,0.12)"
-          : "1px solid rgba(255,255,255,0.06)",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        background: "rgba(245,243,238,0.92)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--line)",
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-heading)" }}>
-            🐙 Octo
-          </span>
-          <span className="text-xs px-2 py-0.5 rounded-full border text-cyan-400"
-            style={{ borderColor: "rgba(6,182,212,0.4)", background: "rgba(6,182,212,0.08)" }}>
-            Open Source
-          </span>
+      <div
+        className="navbar-inner"
+        style={{ height: scrolled ? "52px" : "64px" }}
+      >
+        {/* Logo */}
+        <Link
+          href="/"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "22px",
+            letterSpacing: "0.04em",
+            color: "var(--text)",
+            textDecoration: "none",
+          }}
+        >
+          <span aria-hidden="true">🐙</span> OCTO
+        </Link>
+
+        {/* Desktop links */}
+        <div className="navbar-links">
+          {siteConfig.nav.links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              className="nav-link"
+              style={{
+                color: "var(--text-2)",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: 400,
+                fontFamily: "var(--font-body)",
+                transition: "color 0.2s",
+              }}
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
-        <div className="flex items-center gap-4">
-          <a href="https://github.com/Mininglamp-OSS" target="_blank" rel="noopener noreferrer"
-            className="text-sm text-[#8B949E] hover:text-white transition-colors">
-            GitHub
-          </a>
-          <a href="#cta"
-            className="text-sm font-medium px-4 py-2 rounded-lg text-white transition-all"
+
+        {/* Right side: CTA + hamburger */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <a
+            href={siteConfig.nav.cta.href}
+            className="nav-cta"
             style={{
-              background: "#3B82F6",
-              boxShadow: "0 0 20px rgba(59,130,246,0.3)",
+              background: "var(--accent-blue)",
+              color: "#fff",
+              padding: "10px 22px",
+              borderRadius: "4px",
+              fontSize: "14px",
+              fontWeight: 600,
+              textDecoration: "none",
+              fontFamily: "var(--font-body)",
+              transition: "opacity 0.2s",
             }}
-            onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 0 30px rgba(59,130,246,0.6)")}
-            onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 0 20px rgba(59,130,246,0.3)")}>
-            申请内测
+          >
+            {siteConfig.nav.cta.label}
           </a>
+
+          {/* Hamburger button — hidden on desktop, shown on mobile via CSS */}
+          <button
+            ref={hamburgerRef}
+            className="hamburger-btn"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav-drawer"
+            style={{
+              display: "none",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "4px",
+              color: "var(--text)",
+            }}
+          >
+            {menuOpen ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <line x1="4" y1="4" x2="16" y2="16" />
+                <line x1="16" y1="4" x2="4" y2="16" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <line x1="3" y1="6" x2="17" y2="6" />
+                <line x1="3" y1="10" x2="17" y2="10" />
+                <line x1="3" y1="14" x2="17" y2="14" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Mobile drawer — hidden on desktop via CSS */}
+      {menuOpen && (
+        <div
+          id="mobile-nav-drawer"
+          role="region"
+          aria-label="Navigation menu"
+          className="mobile-menu"
+          style={{
+            background: "rgba(245,243,238,0.98)",
+            borderTop: "1px solid var(--line)",
+            padding: "16px 24px 24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+          }}
+        >
+          {siteConfig.nav.links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              onClick={closeMenu}
+              style={{
+                color: "var(--text)",
+                textDecoration: "none",
+                fontSize: "16px",
+                fontWeight: 500,
+                fontFamily: "var(--font-body)",
+                padding: "12px 0",
+                borderBottom: "1px solid var(--line)",
+                display: "block",
+              }}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }

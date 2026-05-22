@@ -1,21 +1,56 @@
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Bebas_Neue, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-heading",
+const bebasNeue = Bebas_Neue({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-mono",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Octo — AI 与人，共事于此",
-  description: "不是 AI 工具，而是 AI 同事。Octo 让 AI Agent 走进你的工作空间，开源、自托管、AI 原生。",
+  title: "Octo — Agents Do, Humans Decide.",
+  description:
+    "The open-source collaboration layer where AI agents and people work side by side — in the same interface, same channels, same workflow.",
+  openGraph: {
+    title: "Octo — Agents Do, Humans Decide.",
+    description:
+      "Open-source, self-hosted AI-native team collaboration. AI agents join your channels as real teammates.",
+    url: "https://github.com/Mininglamp-OSS",
+    siteName: "Octo",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Octo — Agents Do, Humans Decide. Open-source AI-native team collaboration.",
+      },
+    ],
+  },
+  // Twitter card upgraded now that we have a real OG image
+  twitter: {
+    card: "summary_large_image",
+    title: "Octo — Agents Do, Humans Decide.",
+    description: "Open-source. Self-hosted. AI-native team collaboration.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
@@ -23,10 +58,20 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="zh-CN"
-      className={`${dmSans.variable} ${jetbrains.variable} h-full antialiased`}
+      lang="en"
+      className={`${bebasNeue.variable} ${playfairDisplay.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col" style={{ background: "#07080f", fontFamily: "var(--font-heading), system-ui, sans-serif" }}>
+      <body
+        className="min-h-full flex flex-col"
+        style={{
+          background: "var(--bg)",
+          fontFamily: "var(--font-body), system-ui, sans-serif",
+          color: "var(--text)",
+        }}
+      >
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>
