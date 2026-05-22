@@ -1,4 +1,7 @@
 "use client";
+import { siteConfig } from "@/config/site";
+
+const { hero } = siteConfig;
 
 /* ── Product UI Demo ── */
 function ProductUIDemo() {
@@ -291,7 +294,7 @@ export default function HeroSection() {
     >
       <div className="hero-grid">
         {/* ── Left ── */}
-        <div className="hero-left-pad" style={{ paddingRight: "60px" }}>
+        <div className="hero-left-pad">
           {/* Badge — CSS animation, no JS FOUC */}
           <span
             className="hero-animate hero-animate-1"
@@ -308,7 +311,7 @@ export default function HeroSection() {
               fontFamily: "var(--font-body)",
             }}
           >
-            OPEN SOURCE · SELF-HOSTED · AI-NATIVE
+            {hero.badge}
           </span>
 
           {/* Headline */}
@@ -323,9 +326,9 @@ export default function HeroSection() {
               margin: 0,
             }}
           >
-            AGENTS DO,
+            {hero.headline[0]}
             <br />
-            HUMANS DECIDE.
+            {hero.headline[1]}
           </h1>
 
           {/* Accent */}
@@ -340,7 +343,7 @@ export default function HeroSection() {
               marginTop: "16px",
             }}
           >
-            That&apos;s Octo.
+            {hero.accent}
           </em>
 
           {/* Subtitle */}
@@ -356,8 +359,7 @@ export default function HeroSection() {
               fontFamily: "var(--font-body)",
             }}
           >
-            The open-source collaboration layer where AI agents and people work
-            side by side — in the same interface, same channels, same workflow.
+            {hero.subtitle}
           </p>
 
           {/* CTA */}
@@ -366,7 +368,7 @@ export default function HeroSection() {
             style={{ display: "flex", gap: "20px", alignItems: "center", marginTop: "36px" }}
           >
             <a
-              href="#cta"
+              href={hero.cta.href}
               className="btn-primary"
               style={{
                 background: "var(--accent-blue)",
@@ -384,7 +386,7 @@ export default function HeroSection() {
               Deploy Octo
             </a>
             <a
-              href="https://github.com/Mininglamp-OSS"
+              href={hero.githubCta.href}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost"
@@ -407,11 +409,7 @@ export default function HeroSection() {
             className="hero-animate hero-animate-6"
             style={{ display: "flex", marginTop: "48px", borderTop: "1px solid var(--line)" }}
           >
-            {[
-              { value: "10+", label: "Repositories" },
-              { value: "Open Source", label: "Apache 2.0" },
-              { value: "Self-Hosted", label: "Your Infra" },
-            ].map((stat, i) => (
+            {hero.stats.map((stat, i) => (
               <div
                 key={stat.label}
                 style={{

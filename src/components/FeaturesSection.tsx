@@ -43,6 +43,7 @@ export default function FeaturesSection() {
         REAL TEAMS
       </h2>
 
+      <div className="features-rows-wrap">
       {siteConfig.features.map((f, i) => (
         <div
           key={f.num}
@@ -50,7 +51,6 @@ export default function FeaturesSection() {
           ref={(el) => { rowsRef.current[i] = el; }}
           style={{
             padding: "28px 0",
-            borderTop: i === 0 ? "1px solid var(--line)" : undefined,
             borderBottom: "1px solid var(--line)",
           }}
         >
@@ -95,6 +95,7 @@ export default function FeaturesSection() {
           </div>
         </div>
       ))}
+      </div>
     </section>
   );
 }

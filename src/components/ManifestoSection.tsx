@@ -29,6 +29,7 @@ export default function ManifestoSection() {
         OUR PRINCIPLES
       </div>
 
+      <div className="manifesto-rows-wrap">
       {siteConfig.principles.map((p, i) => (
         <div
           key={p.num}
@@ -36,7 +37,6 @@ export default function ManifestoSection() {
           ref={(el) => { rowsRef.current[i] = el; }}
           style={{
             padding: "40px 0",
-            borderTop: i === 0 ? "1px solid rgba(255,255,255,0.08)" : undefined,
             borderBottom: "1px solid rgba(255,255,255,0.08)",
           }}
         >
@@ -74,7 +74,8 @@ export default function ManifestoSection() {
             {p.desc}
           </div>
         </div>
-      ))}
+      ))}      
+      </div>
     </section>
   );
 }

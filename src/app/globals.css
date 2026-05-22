@@ -12,9 +12,6 @@
   --line: rgba(10, 10, 10, 0.12);
   --white: #FFFFFF;
 
-  --font-display: var(--font-display);
-  --font-serif: var(--font-serif);
-  --font-body: var(--font-body);
 }
 
 /* ── Reset & Base ── */
@@ -45,6 +42,14 @@ body {
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Noscript fallback: if JS is disabled, make all .reveal content visible */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── Hero grid background ── */
@@ -172,6 +177,21 @@ body {
   gap: 32px;
   align-items: center;
 }
+/* Hero left padding — defined here so tablet breakpoint can override it */
+.hero-left-pad {
+  padding-right: 60px;
+}
+
+.manifesto-rows-wrap {
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.features-rows-wrap {
+  border-top: 1px solid var(--line);
+}
+/* ── Mobile nav ── */
+.hamburger-btn {
+  display: none;
+}
 
 /* ── Responsive ── */
 /* Tablet */
@@ -184,6 +204,9 @@ body {
   }
   .hero-grid {
     grid-template-columns: 1fr;
+  }
+  .hero-left-pad {
+    padding-right: 0;
   }
   .hero-right-col {
     margin-top: 48px;
@@ -224,12 +247,14 @@ body {
   .navbar-links {
     display: none;
   }
+  .hamburger-btn {
+    display: block !important;
+  }
   .hero-left-pad {
     padding-right: 0 !important;
   }
   .manifesto-row-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto;
   }
   .manifesto-row-grid .m-desc {
     grid-column: 1 / -1;
@@ -247,9 +272,6 @@ body {
   }
   .stats-grid {
     grid-template-columns: 1fr 1fr;
-  }
-  .hero-left-pad {
-    padding-right: 0 !important;
   }
   .hero-stats-row {
     flex-wrap: wrap;

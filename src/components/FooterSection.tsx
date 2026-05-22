@@ -114,7 +114,7 @@ export default function FooterSection() {
           fontFamily: "var(--font-body)",
         }}
       >
-        {siteConfig.footer.copy}
+        {`© ${new Date().getFullYear()} Mininglamp-OSS · Made with 🐙`}
       </div>
     </footer>
   );
