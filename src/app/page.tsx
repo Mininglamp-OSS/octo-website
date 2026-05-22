@@ -1,27 +1,25 @@
-import LoadingPortal from "@/components/LoadingPortal";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import ScrollNarrative from "@/components/ScrollNarrative";
+import ManifestoSection from "@/components/ManifestoSection";
+import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
-import FeaturesGrid from "@/components/FeaturesGrid";
-import ScenariosSection from "@/components/ScenariosSection";
-import OpenSourceSection from "@/components/OpenSourceSection";
+import StatsSection from "@/components/StatsSection";
 import CTASection from "@/components/CTASection";
+import FooterSection from "@/components/FooterSection";
 
 export default function Home() {
   return (
     <>
-      <LoadingPortal />
       <Navbar />
       <main>
         <HeroSection />
-        <ScrollNarrative />
+        <ManifestoSection />
+        <FeaturesSection />
         <HowItWorks />
-        <FeaturesGrid />
-        <ScenariosSection />
-        <OpenSourceSection />
+        <StatsSection />
         <CTASection />
       </main>
+      <FooterSection />
     </>
   );
 }
