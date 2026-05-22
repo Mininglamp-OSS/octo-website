@@ -3,14 +3,11 @@ import { useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 
 export default function StatsSection() {
-  const itemsRef = useRef<HTMLDivElement[]>([]);
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
-        }),
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
       { threshold: 0.15 }
     );
     itemsRef.current.forEach((el) => el && observer.observe(el));
@@ -19,25 +16,19 @@ export default function StatsSection() {
 
   return (
     <section
+      className="section-pad"
       style={{
-        padding: "80px",
         background: "var(--bg)",
         borderTop: "1px solid var(--line)",
         borderBottom: "1px solid var(--line)",
       }}
     >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 0,
-        }}
-      >
+      <div className="stats-grid">
         {siteConfig.stats.map((stat, i) => (
           <div
             key={stat.label}
             className="reveal"
-            ref={(el) => { if (el) itemsRef.current[i] = el; }}
+            ref={(el) => { itemsRef.current[i] = el; }}
             style={{
               padding: i === 0 ? "0 48px 0 0" : "0 48px",
               borderRight: i < siteConfig.stats.length - 1 ? "1px solid var(--line)" : "none",
@@ -46,7 +37,7 @@ export default function StatsSection() {
             <div
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "72px",
+                fontSize: "clamp(36px, 5vw, 72px)",
                 color: "var(--text)",
                 lineHeight: 1,
               }}

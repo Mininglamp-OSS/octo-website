@@ -3,14 +3,11 @@ import { useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 
 export default function ManifestoSection() {
-  const rowsRef = useRef<HTMLDivElement[]>([]);
+  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
-        }),
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
       { threshold: 0.12 }
     );
     rowsRef.current.forEach((el) => el && observer.observe(el));
@@ -18,12 +15,7 @@ export default function ManifestoSection() {
   }, []);
 
   return (
-    <section
-      style={{
-        background: "#0A0A0A",
-        padding: "80px",
-      }}
-    >
+    <section className="section-pad" style={{ background: "#0A0A0A" }}>
       <div
         style={{
           fontSize: "11px",
@@ -40,22 +32,18 @@ export default function ManifestoSection() {
       {siteConfig.principles.map((p, i) => (
         <div
           key={p.num}
-          className="reveal"
-          ref={(el) => { if (el) rowsRef.current[i] = el; }}
+          className="reveal manifesto-row-grid"
+          ref={(el) => { rowsRef.current[i] = el; }}
           style={{
-            display: "grid",
-            gridTemplateColumns: "100px 280px 1fr",
-            alignItems: "center",
             padding: "40px 0",
             borderTop: i === 0 ? "1px solid rgba(255,255,255,0.08)" : undefined,
             borderBottom: "1px solid rgba(255,255,255,0.08)",
-            gap: "24px",
           }}
         >
           <div
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "80px",
+              fontSize: "clamp(48px, 6vw, 80px)",
               color: "var(--accent-orange)",
               lineHeight: 1,
             }}
@@ -65,7 +53,7 @@ export default function ManifestoSection() {
           <div
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "52px",
+              fontSize: "clamp(32px, 4vw, 52px)",
               color: "#fff",
               lineHeight: 1,
               letterSpacing: "0.02em",
@@ -74,6 +62,7 @@ export default function ManifestoSection() {
             {p.name}
           </div>
           <div
+            className="m-desc"
             style={{
               fontSize: "16px",
               fontWeight: 300,

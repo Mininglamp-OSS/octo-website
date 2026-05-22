@@ -7,10 +7,7 @@ export default function CTASection() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
-        }),
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
       { threshold: 0.15 }
     );
     if (contentRef.current) observer.observe(contentRef.current);
@@ -20,11 +17,8 @@ export default function CTASection() {
   return (
     <section
       id="cta"
-      style={{
-        background: "var(--accent-blue)",
-        padding: "100px 80px",
-        textAlign: "center",
-      }}
+      className="section-pad"
+      style={{ background: "var(--accent-blue)", textAlign: "center" }}
     >
       <div className="reveal" ref={contentRef}>
         <h2
@@ -53,15 +47,14 @@ export default function CTASection() {
           {siteConfig.cta.sub}
         </p>
         <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          className="cta-buttons"
+          style={{ display: "flex", gap: "16px", justifyContent: "center", alignItems: "center" }}
         >
           <a
             href={siteConfig.cta.primary.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-white"
             style={{
               background: "#fff",
               color: "#0A0A0A",
@@ -74,19 +67,14 @@ export default function CTASection() {
               transition: "opacity 0.2s, transform 0.2s",
               display: "inline-block",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = "0.9";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
           >
             {siteConfig.cta.primary.label}
           </a>
           <a
             href={siteConfig.cta.secondary.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline-white"
             style={{
               background: "transparent",
               color: "#fff",
@@ -99,14 +87,6 @@ export default function CTASection() {
               fontFamily: "var(--font-body)",
               transition: "background 0.2s, transform 0.2s",
               display: "inline-block",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             {siteConfig.cta.secondary.label}

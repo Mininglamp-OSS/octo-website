@@ -1,23 +1,18 @@
-"use client";
 import { siteConfig } from "@/config/site";
 
 export default function FooterSection() {
   return (
     <footer
+      className="section-pad"
       style={{
         background: "var(--bg)",
         borderTop: "1px solid var(--line)",
-        padding: "60px 80px 0",
+        paddingBottom: 0,
       }}
     >
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "48px",
-          paddingBottom: "48px",
-          borderBottom: "1px solid var(--line)",
-        }}
+        className="footer-grid"
+        style={{ paddingBottom: "48px", borderBottom: "1px solid var(--line)" }}
       >
         {/* Left */}
         <div>
@@ -29,7 +24,7 @@ export default function FooterSection() {
               marginBottom: "10px",
             }}
           >
-            🐙 OCTO
+            <span aria-hidden="true">🐙</span> OCTO
           </div>
           <div
             style={{
@@ -78,6 +73,7 @@ export default function FooterSection() {
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
+                  className="footer-link"
                   style={{
                     color: "var(--text)",
                     textDecoration: "none",
@@ -85,12 +81,6 @@ export default function FooterSection() {
                     fontFamily: "var(--font-body)",
                     transition: "color 0.2s",
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "var(--accent-blue)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "var(--text)")
-                  }
                 >
                   {link.label}
                 </a>

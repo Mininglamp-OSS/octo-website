@@ -70,3 +70,218 @@ body {
 }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Hero fade-in animation ── */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-animate {
+  opacity: 0;
+  animation: hero-fade-up 0.7s ease forwards;
+}
+.hero-animate-1 { animation-delay: 0.1s; }
+.hero-animate-2 { animation-delay: 0.28s; }
+.hero-animate-3 { animation-delay: 0.42s; }
+.hero-animate-4 { animation-delay: 0.56s; }
+.hero-animate-5 { animation-delay: 0.7s; }
+.hero-animate-6 { animation-delay: 0.84s; }
+
+/* ── CSS hover effects (replaces JS onMouseEnter/Leave) ── */
+.btn-primary:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.btn-ghost:hover {
+  color: var(--accent-blue) !important;
+}
+.btn-white:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px);
+}
+.nav-link:hover {
+  color: var(--text) !important;
+}
+.nav-cta:hover {
+  opacity: 0.85;
+}
+.footer-link:hover {
+  color: var(--accent-blue) !important;
+}
+.product-ui:hover {
+  transform: perspective(1200px) rotateY(-2deg) rotateX(0.5deg) !important;
+}
+
+/* ── Layout containers (used for responsive) ── */
+.section-pad {
+  padding: 80px;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 58fr 42fr;
+  gap: 0;
+  align-items: center;
+}
+.hero-right-col {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.manifesto-row-grid {
+  display: grid;
+  grid-template-columns: 100px 280px 1fr;
+  align-items: center;
+  gap: 24px;
+}
+.features-row-grid {
+  display: grid;
+  grid-template-columns: 60px 220px 1fr 40px;
+  align-items: center;
+  gap: 24px;
+}
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 48px;
+}
+.navbar-inner {
+  padding: 0 80px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: height 0.3s ease;
+}
+.navbar-links {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+/* ── Responsive ── */
+/* Tablet */
+@media (max-width: 1100px) {
+  .section-pad {
+    padding: 60px 40px;
+  }
+  .navbar-inner {
+    padding: 0 40px;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-right-col {
+    margin-top: 48px;
+  }
+  .product-ui {
+    transform: none !important;
+    max-width: 100%;
+  }
+  .manifesto-row-grid {
+    grid-template-columns: 80px 200px 1fr;
+  }
+  .features-row-grid {
+    grid-template-columns: 50px 180px 1fr 30px;
+  }
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .section-pad {
+    padding: 48px 24px;
+  }
+  .navbar-inner {
+    padding: 0 24px;
+    height: 56px !important;
+  }
+  .navbar-links {
+    display: none;
+  }
+  .hero-left-pad {
+    padding-right: 0 !important;
+  }
+  .manifesto-row-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .manifesto-row-grid .m-desc {
+    grid-column: 1 / -1;
+    margin-top: 8px;
+  }
+  .features-row-grid {
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .features-row-grid .f-desc {
+    grid-column: 1 / -1;
+  }
+  .features-row-grid .f-arrow {
+    display: none;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-left-pad {
+    padding-right: 0 !important;
+  }
+  .hero-stats-row {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .cta-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .btn-primary,
+  .btn-white,
+  .btn-outline-white {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 64px !important;
+  }
+  .hero-accent {
+    font-size: 28px !important;
+  }
+  .section-title {
+    font-size: 48px !important;
+  }
+}

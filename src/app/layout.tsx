@@ -5,7 +5,7 @@ import "./globals.css";
 const bebasNeue = Bebas_Neue({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400"],
   display: "swap",
 });
 
@@ -32,12 +32,13 @@ export const metadata: Metadata = {
     title: "Octo — Agents Do, Humans Decide.",
     description:
       "Open-source, self-hosted AI-native team collaboration. AI agents join your channels as real teammates.",
-    url: "https://octo.dev",
+    url: "https://github.com/Mininglamp-OSS",
     siteName: "Octo",
     type: "website",
   },
+  // Twitter card downgraded to summary (no OG image yet)
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "Octo — Agents Do, Humans Decide.",
     description: "Open-source. Self-hosted. AI-native team collaboration.",
   },

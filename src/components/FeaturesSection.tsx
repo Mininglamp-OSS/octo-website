@@ -3,14 +3,11 @@ import { useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 
 export default function FeaturesSection() {
-  const rowsRef = useRef<HTMLDivElement[]>([]);
+  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
-        }),
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
       { threshold: 0.1 }
     );
     rowsRef.current.forEach((el) => el && observer.observe(el));
@@ -18,10 +15,7 @@ export default function FeaturesSection() {
   }, []);
 
   return (
-    <section
-      id="features"
-      style={{ padding: "80px", background: "var(--bg)" }}
-    >
+    <section id="features" className="section-pad" style={{ background: "var(--bg)" }}>
       <div
         style={{
           fontSize: "11px",
@@ -35,6 +29,7 @@ export default function FeaturesSection() {
         FEATURES
       </div>
       <h2
+        className="section-title"
         style={{
           fontFamily: "var(--font-display)",
           fontSize: "clamp(48px, 6vw, 80px)",
@@ -51,16 +46,12 @@ export default function FeaturesSection() {
       {siteConfig.features.map((f, i) => (
         <div
           key={f.num}
-          className="reveal"
-          ref={(el) => { if (el) rowsRef.current[i] = el; }}
+          className="reveal features-row-grid"
+          ref={(el) => { rowsRef.current[i] = el; }}
           style={{
-            display: "grid",
-            gridTemplateColumns: "60px 220px 1fr 40px",
-            alignItems: "center",
             padding: "28px 0",
             borderTop: i === 0 ? "1px solid var(--line)" : undefined,
             borderBottom: "1px solid var(--line)",
-            gap: "24px",
           }}
         >
           <div
@@ -84,6 +75,7 @@ export default function FeaturesSection() {
             {f.name}
           </div>
           <div
+            className="f-desc"
             style={{
               fontSize: "15px",
               fontWeight: 300,
@@ -95,11 +87,9 @@ export default function FeaturesSection() {
             {f.desc}
           </div>
           <div
-            style={{
-              fontSize: "18px",
-              color: "var(--text-2)",
-              textAlign: "right",
-            }}
+            className="f-arrow"
+            aria-hidden="true"
+            style={{ fontSize: "18px", color: "var(--text-2)", textAlign: "right" }}
           >
             →
           </div>

@@ -4,16 +4,19 @@ export const siteConfig = {
   taglineAccent: "That's Octo.",
   description:
     "The open-source collaboration layer where AI agents and people work side by side — in the same interface, same channels, same workflow.",
-  url: "https://octo.dev",
+  url: "https://github.com/Mininglamp-OSS/octo-website",
   github: "https://github.com/Mininglamp-OSS",
   discord: "https://discord.gg/vj9Vsj9hSB",
+  docs: "https://github.com/Mininglamp-OSS",
+  deployment: "https://github.com/Mininglamp-OSS/octo-deployment#readme",
+  roadmap: "https://github.com/Mininglamp-OSS",
 
   nav: {
     links: [
-      { label: "Features", href: "#features" },
+      { label: "Features", href: "#features", external: false },
       { label: "GitHub", href: "https://github.com/Mininglamp-OSS", external: true },
       { label: "Community", href: "https://discord.gg/vj9Vsj9hSB", external: true },
-      { label: "Docs", href: "#" },
+      { label: "Docs", href: "https://github.com/Mininglamp-OSS", external: true },
     ],
     cta: { label: "Get Octo →", href: "#cta" },
   },
@@ -28,8 +31,8 @@ export const siteConfig = {
     githubCta: { label: "GitHub ↗", href: "https://github.com/Mininglamp-OSS" },
     stats: [
       { value: "10+", label: "Repositories" },
-      { value: "81", label: "GitHub Stars" },
-      { value: "Apache 2.0", label: "License" },
+      { value: "Open Source", label: "Apache 2.0" },
+      { value: "Self-Hosted", label: "Your Infra" },
     ],
   },
 
@@ -108,15 +111,15 @@ export const siteConfig = {
   stats: [
     { value: "100%", label: "Open Source (Apache 2.0)" },
     { value: "∞", label: "Extensible Agents" },
-    { value: "0", label: "Data Leaks (Self-Hosted)" },
+    { value: "Self-Hosted", label: "Your Infra, Your Data" },
     { value: "10+", label: "Official Repositories" },
   ],
 
   cta: {
     headline: "DEPLOY OCTO\nTODAY",
     sub: "Open source. Self-hosted. AI-native. Your team's next chapter starts here.",
-    primary: { label: "Docker Deploy", href: "#" },
-    secondary: { label: "Read the Docs", href: "#" },
+    primary: { label: "Docker Deploy", href: "https://github.com/Mininglamp-OSS/octo-deployment#readme" },
+    secondary: { label: "Read the Docs", href: "https://github.com/Mininglamp-OSS" },
   },
 
   footer: {
@@ -127,8 +130,8 @@ export const siteConfig = {
     links: [
       { label: "GitHub →", href: "https://github.com/Mininglamp-OSS", external: true },
       { label: "Discord →", href: "https://discord.gg/vj9Vsj9hSB", external: true },
-      { label: "Docs →", href: "#" },
-      { label: "Roadmap →", href: "#" },
+      { label: "Docs →", href: "https://github.com/Mininglamp-OSS", external: true },
+      { label: "Roadmap →", href: "https://github.com/Mininglamp-OSS", external: true },
     ],
     copy: "© 2025 Mininglamp-OSS · Made with 🐙",
   },
